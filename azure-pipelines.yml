@@ -1,0 +1,35 @@
+trigger:
+  - main # Replace 'main' with your branch name if different
+
+pool:
+  vmImage: "ubuntu-latest"
+
+steps:
+  - task: UseNode@2
+    inputs:
+      versionSpec: "16.x" # Use the Node.js version compatible with your project
+      checkLatest: true
+
+  - script: |
+      npm install
+    displayName: "Install dependencies"
+
+  - script: |
+      npx playwright install
+    displayName: "Install Playwright browsers"
+
+  - script: |
+      npx playwright test
+    displayName: "Run Playwright tests"
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: "JUnit"
+      testResultsFiles: "**/test-results.xml"
+      failTaskOnFailedTests: true
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: "playwright-report"
+      artifactName: "Playwright Report"
+      publishLocation: "pipeline"

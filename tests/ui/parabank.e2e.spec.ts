@@ -16,10 +16,10 @@ import { validateTransactions } from "../../libs/api/axiosApiClient";
 test.describe.serial("Parabank E2E Tests", () => {
   const user = new NewUser();
   const payee = new Payee();
-  const EXPECTED_BALANCE = "$100.00";
-  const EXPECTED_ACCOUNT_TYPE = "SAVINGS";
-  const FUND_TRANSFER_AMOUNT = "5";
-  const BILL_PAY_AMOUNT = "10";
+  const EXPECTED_BALANCE = process.env.EXPECTED_BALANCE || "$100.00";
+  const EXPECTED_ACCOUNT_TYPE = process.env.EXPECTED_ACCOUNT_TYPE || "SAVINGS";
+  const FUND_TRANSFER_AMOUNT = process.env.FUND_TRANSFER_AMOUNT || "5";
+  const BILL_PAY_AMOUNT = process.env.BILL_PAY_AMOUNT || "10";
   let cookies: any;
   let accountNumber: string;
 
@@ -128,7 +128,7 @@ test.describe.serial("Parabank E2E Tests", () => {
     const newAccountPage = new OpenNewAccountPage(page);
     await newAccountPage.navigateTo();
     const newAccountNumber = await newAccountPage.createNewAccount(
-      EXPECTED_ACCOUNT_TYPE
+      EXPECTED_ACCOUNT_TYPE as "SAVINGS" | "CHECKING"
     );
     console.log(`New account created with number: ${newAccountNumber}`);
     accountNumber = newAccountNumber;
@@ -179,7 +179,10 @@ test.describe.serial("Parabank E2E Tests", () => {
   });
 
   test("Step 9: Validate transactions via API", async ({ request }) => {
-    if (!cookies || cookies.length === 0) test.skip();
+    if (!cookies || cookies.length === 0) {
+      console.error("No cookies found. Skipping API validation test.");
+      test.skip();
+    }
 
     // Extract JSESSIONID from cookies
     const jsessionId = cookies.find(
@@ -188,6 +191,10 @@ test.describe.serial("Parabank E2E Tests", () => {
 
     const verifyAccountId = parseInt(accountNumber, 10);
     const verifyAmount = parseFloat(BILL_PAY_AMOUNT);
+
+    if (isNaN(verifyAccountId) || isNaN(verifyAmount)) {
+      throw new Error("Invalid account ID or amount.");
+    }
 
     // Perform the API request using validateTransactions
     const responseBody = await validateTransactions(

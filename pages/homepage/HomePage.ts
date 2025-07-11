@@ -53,7 +53,7 @@ export class HomePage {
 
       // Wait for the success message to appear
       await this.successMessage.waitFor({ state: "visible" });
-
+      console.log("Registration success messages are visible.");
       return true; // Both messages are visible
     } catch (error) {
       console.error("Registration success messages not visible:", error);
