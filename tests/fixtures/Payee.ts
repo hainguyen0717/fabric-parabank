@@ -1,14 +1,14 @@
 import { fakerEN_AU } from "@faker-js/faker";
 
 export class Payee {
-  name: string;
-  streetAddress: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  phoneNumber: string;
-  accountNumber: string;
-  verifyAccount: string;
+  public name: string;
+  public streetAddress: string;
+  public city: string;
+  public state: string;
+  public zipCode: string;
+  public phoneNumber: string;
+  public accountNumber: string;
+  public verifyAccount: string;
 
   constructor() {
     this.name = fakerEN_AU.person.fullName();
