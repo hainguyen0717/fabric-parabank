@@ -13,6 +13,13 @@
    npx playwright test
    ```
 
+NOTE:
+Test will run in headless mode by default. And can be run in headed mode by
+
+```bash
+npx playwright test headed
+```
+
 ---
 
 ## Important: Test Execution Order
@@ -47,10 +54,27 @@ The tests in this project are designed to run **in sequence** because they share
 
 By following these guidelines, you ensure the tests run successfully and as intended.
 
+---
+
+### Optional: Jenkins Execution File:
+
+- I didn't create a Jenkins file, but I have created an Azure DevOps template file and enabled GitHub Actions.
+
+---
+
 ### Known Issues
 
-- I have tested the script multiple times and the scripts were working fine. Then sometimes I ended up with the SERVER issue as following - After inputting username and password, and click submit:
+- I have tested the script multiple times, and the scripts were working fine. However, sometimes I encountered a server issue as shown below. After inputting the username and password and clicking submit::
   ![LoginError.png](screenshot/LoginError.png)
 
-- Test result when executed locally:
-  ![Report.png](screenshot/Report.png)
+---
+
+### Test Results
+
+#### Test result when executed locally:
+
+![Report.png](screenshot/Report.png)
+
+#### Test result in Github Actions:
+
+![GitHubAction.png](screenshot/GitHubAction.png)
