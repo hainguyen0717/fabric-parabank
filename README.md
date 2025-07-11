@@ -49,6 +49,8 @@ By following these guidelines, you ensure the tests run successfully and as inte
 
 ### Known Issues
 
-- I have tested a couple times and the scripts were working fine. Then I have made some slight changes and I was **not able to log on after inputting username and password**. 
-- The issue  as following:
-![LoginError.png](error/LoginError.png)
+- I have tested the script multiple times and the scripts were working fine. Then sometimes I ended up with the SERVER issue as following - After inputting username and password, and click submit:
+  ![LoginError.png](screenshot/LoginError.png)
+
+- Test result when executed locally:
+  ![Report.png](screenshot/Report.png)

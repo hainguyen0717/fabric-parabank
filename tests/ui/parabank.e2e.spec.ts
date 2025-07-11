@@ -121,7 +121,7 @@ test.describe.serial("Parabank E2E Tests", () => {
     page,
     context
   }) => {
-    if (!cookies && cookies.length === 0) test.skip();
+    validateCookies(cookies);
     await context.addCookies(cookies);
 
     // Create new account
@@ -146,7 +146,7 @@ test.describe.serial("Parabank E2E Tests", () => {
   });
 
   test("Step 7: Transfer funds between accounts", async ({ page, context }) => {
-    if (!cookies && cookies.length === 0) test.skip();
+    validateCookies(cookies);
     await context.addCookies(cookies);
 
     // Transfer Funds
@@ -161,7 +161,7 @@ test.describe.serial("Parabank E2E Tests", () => {
   });
 
   test("Step 8: Pay a bill to a new payee", async ({ page, context }) => {
-    if (!cookies && cookies.length === 0) test.skip();
+    validateCookies(cookies);
     await context.addCookies(cookies);
 
     console.log(`Payee created:${JSON.stringify(payee)}`);
@@ -179,10 +179,7 @@ test.describe.serial("Parabank E2E Tests", () => {
   });
 
   test("Step 9: Validate transactions via API", async ({ request }) => {
-    if (!cookies || cookies.length === 0) {
-      console.error("No cookies found. Skipping API validation test.");
-      test.skip();
-    }
+    validateCookies(cookies);
 
     // Extract JSESSIONID from cookies
     const jsessionId = cookies.find(
@@ -215,3 +212,12 @@ test.describe.serial("Parabank E2E Tests", () => {
     ]);
   });
 });
+
+function validateCookies(cookies: any) {
+  if (!cookies || cookies.length === 0) {
+    console.error(
+      "Cookies are missing. Ensure the login step is executed successfully."
+    );
+    test.skip();
+  }
+}
