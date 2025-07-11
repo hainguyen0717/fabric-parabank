@@ -74,4 +74,15 @@ export class HomePage {
     await link.click();
     await heading.waitFor({ state: "visible" });
   }
+
+  async validateNavigation(link: Locator, heading: Locator): Promise<boolean> {
+    // Click the link
+    await link.click();
+
+    // Wait for the corresponding heading to be visible
+    await heading.waitFor({ state: "visible" });
+
+    // Validate that the heading is visible
+    return await heading.isVisible();
+  }
 }

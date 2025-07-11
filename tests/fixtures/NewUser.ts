@@ -23,7 +23,14 @@ export class NewUser {
     this.phone = fakerEN_AU.phone.number();
     this.ssn = fakerEN_AU.finance.accountNumber(9); // Generates a 9-digit random number
     const randomNumber = Math.floor(100 + Math.random() * 900).toString();
-    this.username = `${this.firstName}${this.lastName}${randomNumber}`;
+
+    // To avoid strange issue with Username already existed for being too long
+    this.username =
+      `${randomNumber}${this.firstName}${randomNumber}${this.lastName}`.slice(
+        0,
+        20
+      );
+
     this.password = fakerEN_AU.internet.password({
       length: 8,
       memorable: true,

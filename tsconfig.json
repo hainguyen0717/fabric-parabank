@@ -16,7 +16,8 @@
   "include": [
     "tests/**/*.ts", // Include all test files
     "pages/**/*.ts", // Include all page object files
-    "libs/**/*.ts" // Include all library files
+    "libs/**/*.ts", // Include all library files
+    "tests/ui/create.user.spec.ts1"
   ],
   "exclude": [
     "node_modules", // Exclude dependencies
