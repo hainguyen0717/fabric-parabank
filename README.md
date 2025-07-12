@@ -77,4 +77,4 @@ By following these guidelines, you ensure the tests run successfully and as inte
 
 #### Test result in Github Actions:
 
-![GitHubAction.png](screenshot/GitHubAction.png)
+![GitHubAction.png](screenshot/GithubAction.png)
