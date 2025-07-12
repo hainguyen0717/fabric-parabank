@@ -22,14 +22,9 @@ export class NewUser {
     this.zipCode = fakerEN_AU.location.zipCode();
     this.phone = fakerEN_AU.phone.number();
     this.ssn = fakerEN_AU.finance.accountNumber(9); // Generates a 9-digit random number
-    const randomNumber = Math.floor(100 + Math.random() * 900).toString();
 
     // To avoid strange issue with Username already existed even though it is not
-    this.username = `${randomNumber}${this.firstName}${this.lastName}`.slice(
-      0,
-      20
-    );
-
+    this.username = this.generateUsername();
     this.password = fakerEN_AU.internet.password({
       length: 8,
       memorable: true,
@@ -53,5 +48,9 @@ export class NewUser {
       username: this.username,
       password: this.password
     };
+  }
+
+  public generateUsername() {
+    return fakerEN_AU.internet.username().toLowerCase();
   }
 }

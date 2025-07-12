@@ -14,7 +14,7 @@ import { Payee } from "../fixtures/Payee";
 import { validateTransactions } from "../../libs/api/axiosApiClient";
 
 test.describe.serial("Parabank E2E Tests", () => {
-  const user = new NewUser();
+  let user = new NewUser();
   const payee = new Payee();
   const EXPECTED_BALANCE = process.env.EXPECTED_BALANCE || "$100.00";
   const EXPECTED_ACCOUNT_TYPE = process.env.EXPECTED_ACCOUNT_TYPE || "SAVINGS";
@@ -25,22 +25,19 @@ test.describe.serial("Parabank E2E Tests", () => {
 
   test("Step 1 & 2: Register new user on ParaBank", async ({ page }) => {
     const registerPage = new RegisterPage(page);
+
     // Navigate to registration page using your page object
     await registerPage.goto();
-
-    // Register user using your existing method
-
-    console.log("Generated User Data:", user.getUserData());
-
-    await registerPage.registerUser(user);
+    user = await registerPage.registerUser(user);
     const registerResultPage = new HomePage(page);
+
     expect(
       await registerResultPage.verifyRegistrationSuccess(user)
     ).toBeTruthy();
 
     // Logout after registration
     registerResultPage.logOut;
-    console.log("Successfully registered user:", user.username);
+    console.log("Successfully registered user:", user.getUserData());
   });
 
   test("Step 3 & 4: Login and validate the navigation on the home page", async ({
@@ -96,7 +93,7 @@ test.describe.serial("Parabank E2E Tests", () => {
         homePage.findTransactionsLink,
         findTransactionsPage.findTransactionsHeading
       )
-    ).toBeTruthy();
+    ).toBeTruthy(); // Closing the "Find Transactions" validation block
 
     // Navigate to "Update Contact Info" and validate
     const updateContactInfoPage = new UpdateContactInfoPage(page);
@@ -215,9 +212,6 @@ test.describe.serial("Parabank E2E Tests", () => {
 
 function validateCookies(cookies: any) {
   if (!cookies || cookies.length === 0) {
-    console.error(
-      "Cookies are missing. Ensure the login step is executed successfully."
-    );
-    test.skip();
+    throw new Error("No cookies found. Please ensure the user is logged in.");
   }
 }

@@ -16,6 +16,8 @@ export class RegisterPage {
   readonly passwordField: Locator;
   readonly confirmPasswordField: Locator;
   readonly registerButton: Locator;
+  readonly usernameErrorMMessage: Locator;
+  readonly RETRY = 10; // Number of retries for username availability
 
   constructor(page: Page) {
     this.page = page;
@@ -32,13 +34,16 @@ export class RegisterPage {
     this.passwordField = page.locator('[id="customer.password"]');
     this.confirmPasswordField = page.locator("#repeatedPassword");
     this.registerButton = page.locator('input[value="Register"]');
+    this.usernameErrorMMessage = page.locator(
+      '[id="customer.username.errors"]'
+    );
   }
 
   async goto() {
     await this.page.goto("/parabank/register.htm");
   }
 
-  async registerUser(user: NewUser): Promise<any> {
+  async registerUser(user: NewUser): Promise<NewUser> {
     try {
       // Fill in the registration form with user data
       // Since Playwright automatically waits for elements to be visible,
@@ -59,10 +64,47 @@ export class RegisterPage {
       await this.page.waitForTimeout(500);
       await this.registerButton.click();
 
+      // Handle retry for username already exists
+      user = await this.handleUsernameRetry(user);
+
       return user; // Return the user data for verification in tests
     } catch (error) {
       console.error("Error during registration:", error);
       throw error; // Re-throw the error to be handled by the test
     }
+  }
+
+  private async handleUsernameRetry(user: NewUser): Promise<NewUser> {
+    let attempts = 0;
+
+    while (attempts < this.RETRY) {
+      const isErrorVisible = await this.usernameErrorMMessage
+        .waitFor({ state: "visible", timeout: 1000 })
+        .then(() => true)
+        .catch(() => false);
+
+      if (!isErrorVisible) {
+        console.log("Username is usable, no retry needed.");
+        break;
+      }
+
+      console.log(
+        `Username already exists, retrying... Attempt ${attempts + 1}`
+      );
+      user.username = user.generateUsername(); // Generate a new username
+      console.log("New username generated:", user.username);
+
+      await this.usernameField.fill(user.username);
+      await this.passwordField.fill(user.password);
+      await this.confirmPasswordField.fill(user.password);
+      await this.registerButton.click();
+      attempts++;
+    }
+
+    if (attempts === this.RETRY) {
+      throw new Error("Failed to register user after multiple attempts.");
+    }
+
+    return user;
   }
 }
